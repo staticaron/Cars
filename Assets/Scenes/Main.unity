@@ -156,7 +156,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 849321416}
   - component: {fileID: 848922438}
   - component: {fileID: 848822761}
+  - component: {fileID: 848822762}
   m_Layer: 0
   m_Name: SkyCar
   m_TagString: Untagged
@@ -460,6 +461,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.25, y: 1.4, z: 4.2}
   m_Center: {x: 0, y: 0.7, z: -0.02}
+--- !u!114 &848822762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848822760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da1109fe781249642babb98087687ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carMoveForce: 50
+  carMaxMoveSpeed: 100
+  carTurnTorque: 10
+  backwardMovementModifier: 1
 --- !u!54 &848922438
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -475,7 +492,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!4 &849321344
 Transform:
   m_ObjectHideFlags: 0
@@ -511,8 +528,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848822760}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalRotation: {x: 0.113811955, y: -0, z: -0, w: 0.9935023}
+  m_LocalPosition: {x: 0, y: 1.9866207, z: -0.1670815}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 849321344}
@@ -529,7 +546,7 @@ Transform:
   - {fileID: 849321464}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 13.070001, y: 0, z: 0}
 --- !u!4 &849321448
 Transform:
   m_ObjectHideFlags: 0
@@ -1311,8 +1328,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.14201812, y: -2.6999863e-10, z: 3.3973893e-10, w: 0.98986405}
-  m_LocalPosition: {x: 0.000017814333, y: 6.093763, z: -10.351936}
+  m_LocalRotation: {x: 0.17406975, y: -0.45666662, z: 0.091620095, w: 0.86761814}
+  m_LocalPosition: {x: 9.844544, y: 7.4672275, z: -6.9044733}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1344,7 +1361,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633097888}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2150d45c80b0cdf4eabf143781f74ee1, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
