@@ -1,52 +1,110 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CarMovement : MonoBehaviour
 {
-    [SerializeField] float carMoveForce;
-    [SerializeField] float carMaxMoveSpeed;
-    [SerializeField] float carTurnTorque;
-    [Space]
-    [SerializeField] float backwardMovementModifier;
-    [SerializeField] float brakeModifier;
-    [Space]
-    [SerializeField] Transform torquePoint;
+    private const string HorizontalAxis = "Horizontal";
+    private const string VerticalAxis = "Vertical";
 
-    private Rigidbody _carBody;
     private Vector2 _input;
+    private bool _breakPressed;
+    private Rigidbody _rb;
+    private Vector3 _rbVelocity;
+    private float breakTorque;
+
+    [SerializeField] float maxTorqueValue;
+    [SerializeField] float breakTorqueValue;
+    [SerializeField] float maxSteerAngle;
+    [SerializeField] float tirerRotationSpeed;
+    [SerializeField] float downwardDragValue;
+
+    [SerializeField] WheelCollider _wheelColliderFrontLeft;
+    [SerializeField] WheelCollider _wheelColliderFrontRight;
+    [SerializeField] WheelCollider _wheelColliderBackLeft;
+    [SerializeField] WheelCollider _wheelColliderBackRight;
+
+    [SerializeField] List<Transform> _wheelMeshes;
 
     private void Start()
     {
-        _carBody = GetComponent<Rigidbody>();
-
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        GetInput();
+        UpdateWheelMeshes();
+        _rbVelocity = _rb.velocity;
     }
 
     private void FixedUpdate()
     {
-        //Apply Directional Force
-        if (_input.y < 0 && _carBody.velocity.z > 0)
-        {
-            //Condition for Brake
-            _carBody.AddForce(_input.y * transform.forward * carMoveForce * brakeModifier);
-        }
-        else if (_input.y < 0 && _carBody.velocity.z < 0)
-        {
-            //Condition for Rear
-            _carBody.AddForce(_input.y * transform.forward * carMoveForce * backwardMovementModifier);
-        }
-        else
-        {
-            _carBody.AddForce(_input.y * transform.forward * carMoveForce);
-        }
+        ApplyTorque();
+        ApplySteer();
+        ApplyDownwardDrag();
+    }
 
-        //Apply Torque
-        _carBody.AddForceAtPosition(transform.right * carTurnTorque * _input.x * _input.y, torquePoint.position, ForceMode.Force);
+    private void GetInput()
+    {
+        _input = new Vector2(Input.GetAxisRaw(HorizontalAxis), Input.GetAxisRaw(VerticalAxis));
+        _breakPressed = Input.GetKey(KeyCode.Space);
+    }
 
-        //Apply Forward Force
+    private void ApplyTorque()
+    {
+        _wheelColliderFrontLeft.motorTorque = _input.y * maxTorqueValue;
+        _wheelColliderFrontRight.motorTorque = _input.y * maxTorqueValue;
+
+        breakTorque = _breakPressed == true ? breakTorqueValue : 0;
+
+        ApplyBreakTorque();
+    }
+
+    private void ApplyBreakTorque()
+    {
+        _wheelColliderFrontLeft.brakeTorque = breakTorque;
+        _wheelColliderFrontRight.brakeTorque = breakTorque;
+        _wheelColliderBackLeft.brakeTorque = breakTorque;
+        _wheelColliderBackRight.brakeTorque = breakTorque;
+    }
+
+    private void ApplySteer()
+    {
+        _wheelColliderFrontLeft.steerAngle = _input.x * maxSteerAngle;
+        _wheelColliderFrontRight.steerAngle = _input.x * maxSteerAngle;
+    }
+
+    private void ApplyDownwardDrag()
+    {
+        _rb.AddForce(Vector3.down * Mathf.Abs(_rbVelocity.z) * downwardDragValue, ForceMode.Force);
+    }
+
+    private void UpdateWheelMeshes()
+    {
+        Vector3 FL_WheelPos;
+        Quaternion FL_WheelRot;
+        _wheelColliderFrontLeft.GetWorldPose(out FL_WheelPos, out FL_WheelRot);
+        _wheelMeshes[0].transform.position = FL_WheelPos;
+        _wheelMeshes[0].transform.rotation = Quaternion.Lerp(_wheelMeshes[0].transform.rotation, FL_WheelRot, Time.deltaTime * tirerRotationSpeed);
+
+        Vector3 FR_WheelPos;
+        Quaternion FR_WheelRot;
+        _wheelColliderFrontRight.GetWorldPose(out FR_WheelPos, out FR_WheelRot);
+        _wheelMeshes[1].transform.position = FR_WheelPos;
+        _wheelMeshes[1].transform.rotation = Quaternion.Lerp(_wheelMeshes[1].transform.rotation, FR_WheelRot, Time.deltaTime * tirerRotationSpeed);
+
+        Vector3 BL_WheelPos;
+        Quaternion BL_WheelRot;
+        _wheelColliderBackLeft.GetWorldPose(out BL_WheelPos, out BL_WheelRot);
+        _wheelMeshes[2].transform.position = BL_WheelPos;
+        _wheelMeshes[2].transform.rotation = Quaternion.Lerp(_wheelMeshes[2].transform.rotation, BL_WheelRot, Time.deltaTime * tirerRotationSpeed);
+
+        Vector3 BR_WheelPos;
+        Quaternion BR_WheelRot;
+        _wheelColliderBackRight.GetWorldPose(out BR_WheelPos, out BR_WheelRot);
+        _wheelMeshes[3].transform.position = BR_WheelPos;
+        _wheelMeshes[3].transform.rotation = Quaternion.Lerp(_wheelMeshes[3].transform.rotation, BR_WheelRot, Time.deltaTime * tirerRotationSpeed);
     }
 }

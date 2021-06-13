@@ -1,8 +1,30 @@
 {
   "dependencies": {
+    "com.unity.cinemachine": {
+      "version": "2.7.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ide.vscode": {
       "version": "1.2.1",
       "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.probuilder": {
+      "version": "file:E:/Assets/Standard Assets/com.unity.probuilder@4.2.3",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.0"
+      }
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.0",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
