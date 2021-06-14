@@ -20,6 +20,13 @@ public class CarMovement : MonoBehaviour
     [SerializeField] float tirerRotationSpeed;
     [SerializeField] float downwardDragValue;
 
+    [Space]
+
+    [SerializeField] Transform groundCheckPos;
+    [SerializeField] bool isGrounded;
+    [SerializeField] float groundCheckDistance;
+    [SerializeField] LayerMask groundLayer;
+
     [SerializeField] WheelCollider _wheelColliderFrontLeft;
     [SerializeField] WheelCollider _wheelColliderFrontRight;
     [SerializeField] WheelCollider _wheelColliderBackLeft;
@@ -43,14 +50,23 @@ public class CarMovement : MonoBehaviour
     {
         ApplyTorque();
         ApplySteer();
-        ApplyDownwardDrag();
+        GroundCheck();
+        // ApplyDownwardDrag();
+
+        Debug.Log(Mathf.Sqrt(Vector3.SqrMagnitude(_rbVelocity)));
     }
+
+    #region Input
 
     private void GetInput()
     {
         _input = new Vector2(Input.GetAxisRaw(HorizontalAxis), Input.GetAxisRaw(VerticalAxis));
         _breakPressed = Input.GetKey(KeyCode.Space);
     }
+
+    #endregion
+
+    #region Movement
 
     private void ApplyTorque()
     {
@@ -72,15 +88,25 @@ public class CarMovement : MonoBehaviour
 
     private void ApplySteer()
     {
-        _wheelColliderFrontLeft.steerAngle = _input.x * maxSteerAngle;
-        _wheelColliderFrontRight.steerAngle = _input.x * maxSteerAngle;
+        _wheelColliderFrontLeft.steerAngle = Mathf.Lerp(_wheelColliderFrontLeft.steerAngle, _input.x * maxSteerAngle, Time.deltaTime * this.tirerRotationSpeed);
+        _wheelColliderFrontRight.steerAngle = Mathf.Lerp(_wheelColliderFrontRight.steerAngle, _input.x * maxSteerAngle, Time.deltaTime * this.tirerRotationSpeed);
+    }
+
+    private void GroundCheck()
+    {
+        isGrounded = Physics2D.Raycast(groundCheckPos.position, -transform.up, groundCheckDistance, groundLayer);
     }
 
     private void ApplyDownwardDrag()
     {
+        if (isGrounded == false) return;
+
         _rb.AddForce(Vector3.down * Mathf.Abs(_rbVelocity.z) * downwardDragValue, ForceMode.Force);
     }
 
+    #endregion
+
+    #region Visuals
     private void UpdateWheelMeshes()
     {
         Vector3 FL_WheelPos;
@@ -107,4 +133,14 @@ public class CarMovement : MonoBehaviour
         _wheelMeshes[3].transform.position = BR_WheelPos;
         _wheelMeshes[3].transform.rotation = Quaternion.Lerp(_wheelMeshes[3].transform.rotation, BR_WheelRot, Time.deltaTime * tirerRotationSpeed);
     }
+    #endregion
+
+    #region Debug
+
+    private void OnDrawGizmos()
+    {
+        Debug.DrawLine(groundCheckPos.position, groundCheckPos.position + new Vector3(0, -groundCheckDistance, 0), Color.green);
+    }
+
+    #endregion
 }
