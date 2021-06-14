@@ -11,7 +11,7 @@ public class CarMovement : MonoBehaviour
     private Vector2 _input;
     private bool _breakPressed;
     private Rigidbody _rb;
-    private Vector3 _rbVelocity;
+    public Vector3 _rbVelocity;
     private float breakTorque;
 
     [SerializeField] float maxTorqueValue;
@@ -51,9 +51,6 @@ public class CarMovement : MonoBehaviour
         ApplyTorque();
         ApplySteer();
         GroundCheck();
-        // ApplyDownwardDrag();
-
-        Debug.Log(Mathf.Sqrt(Vector3.SqrMagnitude(_rbVelocity)));
     }
 
     #region Input
