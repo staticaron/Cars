@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CarMovement : MonoBehaviour
 {
+    [SerializeField] PhotonView view;
+
     private const string HorizontalAxis = "Horizontal";
     private const string VerticalAxis = "Vertical";
 
@@ -41,16 +44,22 @@ public class CarMovement : MonoBehaviour
 
     private void Update()
     {
-        GetInput();
-        UpdateWheelMeshes();
-        _rbVelocity = _rb.velocity;
+        if (view.IsMine)
+        {
+            GetInput();
+            UpdateWheelMeshes();
+            _rbVelocity = _rb.velocity;
+        }
     }
 
     private void FixedUpdate()
     {
-        ApplyTorque();
-        ApplySteer();
-        GroundCheck();
+        if (view.IsMine)
+        {
+            ApplyTorque();
+            ApplySteer();
+            GroundCheck();
+        }
     }
 
     #region Input
